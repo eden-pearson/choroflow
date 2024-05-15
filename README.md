@@ -27,12 +27,4 @@ Chronoflow is a full-stack web application designed to visualize historical even
    ```sh
    git clone https://github.com/eden-pearson/chronoflow.git
 
-## Credits
-
-This app was produced as a group project while studying at Dev Academy Aotearoa. Other group members:
-- Paul
-- Zoe
-- Stanley
-- Tori
-
 
