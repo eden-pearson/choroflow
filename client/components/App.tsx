@@ -3,24 +3,24 @@ import { Outlet } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import '../styles/index.css'
-import Header from './Header.tsx'
-import Footer from './Footer.tsx'
-import Globe from './Globe.tsx'
-import Timeline from './Timeline.tsx'
-import Filters from './Filters.tsx'
-import CountrySelect from './CountrySelect.tsx'
-import { getAllInventions } from '../apis/api-inventions.ts'
-import type { Invention } from '../../models/Inventions.ts'
-import type { Person } from '../../models/People.ts'
-import type { Event } from '../../models/Events.ts'
-import { getAllPeople } from '../apis/api-people.ts'
-import { getAllEvents } from '../apis/api-world-events.ts'
-import { CategoryData } from '../../models/Types.ts'
+import Header from './Header'
+import Footer from './Footer'
+import Globe from './Globe'
+import Timeline from './Timeline'
+import Filters from './Filters'
+import CountrySelect from './CountrySelect'
+import { getAllInventions } from '../apis/api-inventions'
+import type { Invention } from '../../models/Inventions'
+import type { Person } from '../../models/People'
+import type { Event } from '../../models/Events'
+import { getAllPeople } from '../apis/api-people'
+import { getAllEvents } from '../apis/api-world-events'
+import { CategoryData } from '../../models/Types'
 import {
   getNewZealandEventsData,
   getNewZealandInventionsData,
   getNewZealandPeopleData,
-} from '../apis/api-country.ts'
+} from '../apis/api-country'
 
 interface FilterStatus {
   event: string
@@ -73,12 +73,19 @@ function App() {
   const [people, setPeople] = useState<Person[]>([])
   const [worldEvents, setWorldEvents] = useState<Event[]>([])
   const [filterStatus, setFilterStatus] = useState<FilterStatus>(defaultStatus)
-  const [selectedCountry, setSelectedCountry] =
-    useState<string>('disabledOption')
-  // const [data, setData] = useState<Event[] | Invention[]>([])
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(
+    'disabledOption'
+  )
 
   useEffect(() => {
-    if (inventionsData && peopleData && worldEventsData) {
+    if (
+      inventionsData &&
+      peopleData &&
+      worldEventsData &&
+      inventionsNZData &&
+      peopleNZData &&
+      eventsNZData
+    ) {
       if (selectedCountry === 'disabledOption') {
         setInventions(inventionsData)
         setPeople(peopleData)
@@ -103,23 +110,39 @@ function App() {
     eventsNZData,
   ])
 
-  // useEffect(() => {
-  //   if (filterStatus.event === 'worldEvents') {
-  //     setData(worldEventsData as Event[])
-  //   } else if (filterStatus.event === 'inventions') {
-  //     setData(inventionsData as Invention[])
-  //   }
-  // }, [filterStatus, inventionsData, worldEventsData])
-
-  if (inventionsLoading || peopleLoading || worldEventsLoading) {
-    return <p>Loading....</p>
+  if (
+    inventionsLoading ||
+    peopleLoading ||
+    worldEventsLoading ||
+    inventionsNZLoading ||
+    peopleNZLoading ||
+    eventsNZLoading
+  ) {
+    return <p className="m-12 text-3xl">Loading....</p>
   }
 
-  if (inventionsError || peopleError || worldEventsError) {
-    return <p>There was an error: {inventionsError?.message}</p>
+  if (
+    inventionsError ||
+    peopleError ||
+    worldEventsError ||
+    inventionsNZError ||
+    peopleNZError ||
+    eventsNZError
+  ) {
+    return (
+      <p className="m-12 text-2xl">
+        There was an error:{' '}
+        {inventionsError?.message ||
+          peopleError?.message ||
+          worldEventsError?.message}
+      </p>
+    )
   }
 
-  function filterByCountry(data: CategoryData, country: string) {
+  function filterByCountry<T extends CategoryData>(
+    data: T[],
+    country: string
+  ): T[] {
     return data.filter((item) => item.country === country)
   }
 
@@ -127,17 +150,15 @@ function App() {
     switch (category) {
       case 'inventions':
         return inventions as Invention[]
-
       case 'worldEvents':
         return worldEvents as Event[]
-        p
       default:
         return []
     }
   }
 
   return (
-    <div className="h-screen bg-black bg-cover flex flex-col">
+    <div className="h-screen flex flex-col">
       <Header />
       <div className="flex w-screen mb-10 mt-[-1rem]">
         <Globe selectedCountry={selectedCountry} />
@@ -173,7 +194,7 @@ function App() {
         filterStatus={filterStatus}
       />
       <div className="mt-auto"></div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   )
 }
