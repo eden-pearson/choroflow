@@ -21,10 +21,10 @@ Chronoflow is a full-stack web application designed to visualize historical even
 - Vite
 - Tailwind CSS
 
-## Installation and Setup
-
-1. Clone this repository:
-   ```sh
-   git clone https://github.com/eden-pearson/chronoflow.git
-
+### Installation
+```bash
+git clone https://github.com/eden-pearson/task-master.git
+cd task-master
+npm install
+npm run dev
 
